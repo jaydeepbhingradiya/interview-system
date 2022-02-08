@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import FeedbackTable from "./components/FeedbackTable";
+import InterviewFeedbackForm from "./components/InterviewFeedbackForm";
 
 function App() {
+  const [show, setShow] = useState(false);
+  const resultTableHandler = () => {
+    setShow(true);
+  };
+
+  const formHandler = () => {
+    setShow(false);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {show ? (
+        <FeedbackTable showForm={formHandler} />
+      ) : (
+        <InterviewFeedbackForm showResultTable={resultTableHandler} />
+      )}
     </div>
   );
 }
