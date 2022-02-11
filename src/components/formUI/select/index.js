@@ -17,6 +17,7 @@ function SelectWrapper({ name, options, ...otherProps }) {
     select: true,
     variant: "outlined",
     fullWidth: true,
+    sx: { textAlign: "left" },
     onChange: handleChange,
   };
 

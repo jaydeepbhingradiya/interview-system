@@ -5,6 +5,7 @@ import InterviewFeedbackForm from "./components/InterviewFeedbackForm";
 
 function App() {
   const [show, setShow] = useState(true);
+  const [formTitle, setFormTitle] = useState(false);
   const [selectedResult, setSelectedResult] = useState({});
   const resultTableHandler = () => {
     setShow(true);
@@ -18,15 +19,11 @@ function App() {
     setSelectedResult(data);
   };
 
-  const onUpdate = () => {
-    // const updatedData = this.state.items.map((x) =>
-    //   x.id === item.id ? { ...x, firstname: item.newFirstname } : x
-    // );
-    // this.setState({ items: updatedData });
-  };
-
   const handleClearField = () => {
     setSelectedResult({});
+  };
+  const toggleTitle = () => {
+    setFormTitle((prevState) => !prevState);
   };
 
   return (
@@ -35,13 +32,14 @@ function App() {
         <FeedbackTable
           showForm={formHandler}
           getselectedData={handleSelectedData}
+          toggleTitle={toggleTitle}
         />
       ) : (
         <InterviewFeedbackForm
           showResultTable={resultTableHandler}
           selectedResult={selectedResult}
-          onUpdate={onUpdate}
           clearField={handleClearField}
+          title={formTitle}
         />
       )}
     </div>
