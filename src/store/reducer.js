@@ -1,28 +1,25 @@
-import produce from "immer";
+// import produce from "immer";
 
-let initialState = {
-  results: [],
-};
+let initialState = [];
 
 const candidateResultReducer = (state = initialState, action) => {
   switch (action.type) {
     case "ADD_RESULT": {
-      const newState = produce(state, (draft) => {
-        draft.results.push(action.payload);
-      });
-      return newState;
+      let { payload } = action;
+      payload.id = Math.random().toString();
+      return [...state, payload];
     }
+
     case "REMOVE_RESULT": {
-      let newState = { ...state };
-      newState.results.filter((item) => item.id !== action.payload);
-      // const newState = produce(state, (draft) => {
-      // let index = draft.results.findIndex(
-      //   (item) => item.id === action.payload
-      // );
-      // draft.results.filter((item) => item.id !== action.payload);
-      // draft.results.slice(index, 1);
-      // });
-      return newState;
+      return state.filter((state) => state.id !== action.payload);
+    }
+
+    case "UPDATE_RESULT": {
+      debugger;
+      const index = state.findIndex((item) => item.id === action.payload.id);
+      const newData = [...state];
+      newData[index] = action.payload;
+      return newData;
     }
 
     default: {

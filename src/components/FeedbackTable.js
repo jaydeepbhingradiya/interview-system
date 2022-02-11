@@ -10,6 +10,8 @@ import Paper from "@mui/material/Paper";
 import { Button, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import AddIcon from "@mui/icons-material/Add";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,25 +33,36 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function FeedbackTable({ showForm }) {
-  const result = useSelector((state) => state.results);
+function FeedbackTable({ showForm, getselectedData }) {
+  const result = useSelector((state) => state);
+  console.log("result", result);
   const dispatch = useDispatch();
 
-  const handleBack = () => {
+  const handleAdd = () => {
     showForm();
   };
 
   const deleteHandler = (id) => {
-    console.log(id);
     dispatch({ type: "REMOVE_RESULT", payload: id });
   };
+
+  const editHandler = (data) => {
+    getselectedData(data);
+    showForm();
+  };
+
   return (
     <TableContainer component={Paper}>
       <Typography variant="h4">Interview Result</Typography>
 
-      <Button onClick={handleBack} variant="contained">
-        Back
+      <Button
+        onClick={handleAdd}
+        variant="contained"
+        sx={{ float: "right", marginBottom: "1rem" }}
+      >
+        <AddIcon />
       </Button>
+
       <Table
         sx={{ minWidth: 700, marginTop: "1rem" }}
         aria-label="customized table"
@@ -57,47 +70,78 @@ function FeedbackTable({ showForm }) {
         <TableHead>
           <TableRow>
             <StyledTableCell>Name</StyledTableCell>
+
             <StyledTableCell align="center">Date</StyledTableCell>
+
             <StyledTableCell align="center">interviewer</StyledTableCell>
+
             <StyledTableCell align="center">technology</StyledTableCell>
+
             <StyledTableCell align="center">experience</StyledTableCell>
+
             <StyledTableCell align="center">Round</StyledTableCell>
+
             <StyledTableCell align="center">communication</StyledTableCell>
+
             <StyledTableCell align="center">
               Practical completion
             </StyledTableCell>
+
             <StyledTableCell align="center">Coding standard</StyledTableCell>
+
             <StyledTableCell align="center">Technical round</StyledTableCell>
+
             <StyledTableCell align="center">Notes</StyledTableCell>
+
+            <StyledTableCell align="center">Edit</StyledTableCell>
+
             <StyledTableCell align="center">Delete</StyledTableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
           {result.map((row) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
                 {row.candidate}
               </StyledTableCell>
+
               <StyledTableCell align="center">
                 {row.dateOfInterview}
               </StyledTableCell>
+
               <StyledTableCell align="center">
                 {row.interviewer}
               </StyledTableCell>
+
               <StyledTableCell align="center">{row.technology}</StyledTableCell>
+
               <StyledTableCell align="center">{row.experience}</StyledTableCell>
+
               <StyledTableCell align="center">{row.round}</StyledTableCell>
+
               <StyledTableCell align="center">
                 {row.communication}
               </StyledTableCell>
+
               <StyledTableCell align="center">{row.Practical}</StyledTableCell>
+
               <StyledTableCell align="center">
                 {row.codingStandard}
               </StyledTableCell>
+
               <StyledTableCell align="center">
                 {row.technicalRound}
               </StyledTableCell>
+
               <StyledTableCell align="center">{row.note}</StyledTableCell>
+
+              <StyledTableCell align="center">
+                <Button onClick={() => editHandler(row)}>
+                  <ModeEditIcon />
+                </Button>
+              </StyledTableCell>
+
               <StyledTableCell align="center">
                 <Button
                   sx={{ color: "red" }}
