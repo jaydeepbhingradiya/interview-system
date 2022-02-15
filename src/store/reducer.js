@@ -15,7 +15,6 @@ const candidateResultReducer = (state = initialState, action) => {
     }
 
     case "UPDATE_RESULT": {
-      debugger;
       const index = state.findIndex((item) => item.id === action.payload.id);
       const newData = [...state];
       newData[index] = action.payload;
