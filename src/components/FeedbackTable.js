@@ -1,28 +1,13 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { Button, TextField, Typography } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Table, TableBody, TableContainer, TableHead } from "@mui/material";
+import { TableSortLabel, TableRow, TableCell, Paper } from "@mui/material";
+import { Button, TableFooter, TextField, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
-import { removeResult } from "../store/actions";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
+import { CustomTablePagination } from "./pagination/index";
+import AlertDialog from "./alertDialog/AlertDialog";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -35,22 +20,28 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const result = useSelector((state) => state);
-  const dispatch = useDispatch();
 
   const addHandler = () => {
     addTitle();
     showForm();
   };
 
-  const deleteHandler = (id) => {
-    dispatch(removeResult(id));
-  };
-
   const editHandler = (data) => {
     getselectedData(data);
     editTitle();
     showForm();
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   let searchData = result.filter((row) => {
@@ -70,80 +61,53 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
 
   let tablebody = (
     <TableBody>
-      {searchData.length > 0
-        ? searchData.map((row) => (
-            <StyledTableRow key={row.id}>
-              <StyledTableCell component="th" scope="row">
-                {row.candidate || "-"}
-              </StyledTableCell>
+      {(rowsPerPage > 0
+        ? searchData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        : searchData
+      ).map((row) => (
+        <StyledTableRow key={row.id}>
+          <TableCell component="th" scope="row">
+            {row.candidate || "-"}
+          </TableCell>
 
-              <StyledTableCell align="center">
-                {row.dateOfInterview || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.dateOfInterview || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.interviewer || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.interviewer || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.technology || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.technology || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.experienceInYear || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.experienceInYear || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.experienceInMonth || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.experienceInMonth || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.round || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.round || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.communication || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.communication || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.Practical || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.Practical || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.codingStandard || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.codingStandard || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.technicalRound || "-"}
-              </StyledTableCell>
+          <TableCell align="center">{row.technicalRound || "-"}</TableCell>
 
-              <StyledTableCell align="center">
-                {row.note || "-"}
-              </StyledTableCell>
+          <TableCell style={{ width: "30%" }} align="center">
+            {row.note || "-"}
+          </TableCell>
 
-              <StyledTableCell align="center">
-                <Button onClick={() => editHandler(row)}>
-                  <ModeEditIcon />
-                </Button>
-                <Button
-                  sx={{ color: "red" }}
-                  onClick={() => deleteHandler(row.id)}
-                >
-                  <DeleteIcon />
-                </Button>
-              </StyledTableCell>
-
-              {/* <StyledTableCell align="center">
-                <Button
-                  sx={{ color: "red" }}
-                  onClick={() => deleteHandler(row.id)}
-                >
-                  <DeleteIcon />
-                </Button>
-              </StyledTableCell> */}
-            </StyledTableRow>
-          ))
-        : "no data"}
+          <TableCell align="center">
+            <Button onClick={() => editHandler(row)}>
+              <ModeEditIcon />
+            </Button>
+            {/* <Button
+              sx={{ color: "red" }}
+              onClick={() => deleteHandler(row.id)}
+            > */}
+            <AlertDialog id={row.id} />
+            {/* <DeleteIcon /> */}
+            {/* </Button> */}
+          </TableCell>
+        </StyledTableRow>
+      ))}
     </TableBody>
   );
 
@@ -165,47 +129,75 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
       </Button>
 
       <Table
-        sx={{ minWidth: 700, marginTop: "1rem" }}
+        sx={{ minWidth: 700, marginTop: "1rem", textAlign: "center" }}
         aria-label="customized table"
       >
-        <TableHead>
+        <TableHead
+          style={{
+            backgroundColor: "grey",
+            fontWeight: "bold",
+          }}
+        >
           <TableRow>
-            <StyledTableCell>Name</StyledTableCell>
+            <TableCell>Name</TableCell>
 
-            <StyledTableCell align="center">Date</StyledTableCell>
+            <TableCell align="center">
+              <TableSortLabel>Date</TableSortLabel>
+            </TableCell>
 
-            <StyledTableCell align="center">interviewer</StyledTableCell>
+            <TableCell align="center">Tnterviewer</TableCell>
 
-            <StyledTableCell align="center">technology</StyledTableCell>
+            <TableCell align="center">Technology</TableCell>
 
-            <StyledTableCell align="center" colSpan={2}>
-              experience in year - month
-            </StyledTableCell>
+            <TableCell align="center" colSpan={2}>
+              Experience
+              <TableCell>Years</TableCell>
+              <TableCell>Months</TableCell>
+            </TableCell>
 
-            {/* <StyledTableCell align="center">
-              month of experience
-            </StyledTableCell> */}
+            <TableCell align="center">Round</TableCell>
 
-            <StyledTableCell align="center">Round</StyledTableCell>
+            <TableCell align="center">Communication</TableCell>
 
-            <StyledTableCell align="center">communication</StyledTableCell>
+            <TableCell align="center">Practical completion</TableCell>
 
-            <StyledTableCell align="center">
-              Practical completion
-            </StyledTableCell>
+            <TableCell align="center">Coding standard</TableCell>
 
-            <StyledTableCell align="center">Coding standard</StyledTableCell>
+            <TableCell align="center">Technical round</TableCell>
 
-            <StyledTableCell align="center">Technical round</StyledTableCell>
+            <TableCell align="center">Notes</TableCell>
 
-            <StyledTableCell align="center">Notes</StyledTableCell>
-
-            <StyledTableCell align="center">Action</StyledTableCell>
-
-            {/* <StyledTableCell align="center">Delete</StyledTableCell> */}
+            <TableCell align="center">Action</TableCell>
           </TableRow>
         </TableHead>
         {tablebody}
+      </Table>
+      {searchData.length === 0 && (
+        <Typography variant="h4">No data found</Typography>
+      )}
+      <Table>
+        <TableFooter>
+          <TableRow>
+            <CustomTablePagination
+              rowsPerPageOptions={[2, 5, 10, 25, { label: "All", value: -1 }]}
+              colSpan={3}
+              count={searchData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              componentsProps={{
+                select: {
+                  "aria-label": "rows per page",
+                },
+                actions: {
+                  showFirstButton: true,
+                  showLastButton: true,
+                },
+              }}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </TableRow>
+        </TableFooter>
       </Table>
     </TableContainer>
   );

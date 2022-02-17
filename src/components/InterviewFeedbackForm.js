@@ -118,7 +118,6 @@ function InterviewFeedbackForm({
       initialValues={INITAIL_VALUE}
       validationSchema={FORM_VALIDATION}
       onSubmit={handleSubmit}
-      // validateOnMount
     >
       {(formik) => {
         return (

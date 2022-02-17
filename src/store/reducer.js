@@ -1,5 +1,3 @@
-// import produce from "immer";
-
 let initialState = [];
 
 const candidateResultReducer = (state = initialState, action) => {
