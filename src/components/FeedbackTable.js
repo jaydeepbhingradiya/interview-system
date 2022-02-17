@@ -19,17 +19,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
+  const result = useSelector((state) => state);
+  const [data, setData] = useState(result);
+  const [order, setOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const result = useSelector((state) => state);
 
-  const addHandler = () => {
+  const handleAdd = () => {
     addTitle();
     showForm();
   };
 
-  const editHandler = (data) => {
+  const handleEdit = (data) => {
     getselectedData(data);
     editTitle();
     showForm();
@@ -44,7 +46,25 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
     setPage(0);
   };
 
-  let searchData = result.filter((row) => {
+  const handleSorting = (col) => {
+    if (order === "asc") {
+      const sorted = [...data].sort((a, b) =>
+        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+      );
+      setData(sorted);
+
+      setOrder("dsc");
+    }
+    if (order === "dsc") {
+      const sorted = [...data].sort((a, b) =>
+        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+      );
+      setData(sorted);
+      setOrder("asc");
+    }
+  };
+
+  let filterData = data.filter((row) => {
     if (searchTerm === "") {
       return row;
     } else if (
@@ -60,56 +80,47 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
   });
 
   let tablebody = (
-    <TableBody>
-      {(rowsPerPage > 0
-        ? searchData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        : searchData
-      ).map((row) => (
-        <StyledTableRow key={row.id}>
-          <TableCell component="th" scope="row">
-            {row.candidate || "-"}
-          </TableCell>
+    rowsPerPage > 0
+      ? filterData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      : filterData
+  ).map((row) => (
+    <StyledTableRow key={row.id}>
+      <TableCell component="th" scope="row">
+        {row.candidate || "-"}
+      </TableCell>
 
-          <TableCell align="center">{row.dateOfInterview || "-"}</TableCell>
+      <TableCell align="center">{row.dateOfInterview || "-"}</TableCell>
 
-          <TableCell align="center">{row.interviewer || "-"}</TableCell>
+      <TableCell align="center">{row.interviewer || "-"}</TableCell>
 
-          <TableCell align="center">{row.technology || "-"}</TableCell>
+      <TableCell align="center">{row.technology || "-"}</TableCell>
 
-          <TableCell align="center">{row.experienceInYear || "-"}</TableCell>
+      <TableCell align="center">{row.experienceInYear || "-"}</TableCell>
 
-          <TableCell align="center">{row.experienceInMonth || "-"}</TableCell>
+      <TableCell align="center">{row.experienceInMonth || "-"}</TableCell>
 
-          <TableCell align="center">{row.round || "-"}</TableCell>
+      <TableCell align="center">{row.round || "-"}</TableCell>
 
-          <TableCell align="center">{row.communication || "-"}</TableCell>
+      <TableCell align="center">{row.communication || "-"}</TableCell>
 
-          <TableCell align="center">{row.Practical || "-"}</TableCell>
+      <TableCell align="center">{row.Practical || "-"}</TableCell>
 
-          <TableCell align="center">{row.codingStandard || "-"}</TableCell>
+      <TableCell align="center">{row.codingStandard || "-"}</TableCell>
 
-          <TableCell align="center">{row.technicalRound || "-"}</TableCell>
+      <TableCell align="center">{row.technicalRound || "-"}</TableCell>
 
-          <TableCell style={{ width: "30%" }} align="center">
-            {row.note || "-"}
-          </TableCell>
+      <TableCell style={{ width: "30%" }} align="center">
+        {row.note || "-"}
+      </TableCell>
 
-          <TableCell align="center">
-            <Button onClick={() => editHandler(row)}>
-              <ModeEditIcon />
-            </Button>
-            {/* <Button
-              sx={{ color: "red" }}
-              onClick={() => deleteHandler(row.id)}
-            > */}
-            <AlertDialog id={row.id} />
-            {/* <DeleteIcon /> */}
-            {/* </Button> */}
-          </TableCell>
-        </StyledTableRow>
-      ))}
-    </TableBody>
-  );
+      <TableCell align="center">
+        <Button onClick={() => handleEdit(row)}>
+          <ModeEditIcon />
+        </Button>
+        <AlertDialog id={row.id} />
+      </TableCell>
+    </StyledTableRow>
+  ));
 
   return (
     <TableContainer component={Paper}>
@@ -121,10 +132,7 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <Button
-        onClick={addHandler}
-        sx={{ float: "right", marginBottom: "1rem" }}
-      >
+      <Button onClick={handleAdd} sx={{ float: "right", marginBottom: "1rem" }}>
         <AddIcon />
       </Button>
 
@@ -142,10 +150,15 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
             <TableCell>Name</TableCell>
 
             <TableCell align="center">
-              <TableSortLabel>Date</TableSortLabel>
+              <TableSortLabel
+                direction={order === "asc" ? "asc" : "desc"}
+                onClick={() => handleSorting("dateOfInterview")}
+              >
+                Date
+              </TableSortLabel>
             </TableCell>
 
-            <TableCell align="center">Tnterviewer</TableCell>
+            <TableCell align="center">Idsdsdsnterviewer</TableCell>
 
             <TableCell align="center">Technology</TableCell>
 
@@ -170,9 +183,9 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
             <TableCell align="center">Action</TableCell>
           </TableRow>
         </TableHead>
-        {tablebody}
+        <TableBody>{tablebody}</TableBody>
       </Table>
-      {searchData.length === 0 && (
+      {filterData.length === 0 && (
         <Typography variant="h4">No data found</Typography>
       )}
       <Table>
@@ -181,7 +194,7 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
             <CustomTablePagination
               rowsPerPageOptions={[2, 5, 10, 25, { label: "All", value: -1 }]}
               colSpan={3}
-              count={searchData.length}
+              count={filterData.length}
               rowsPerPage={rowsPerPage}
               page={page}
               componentsProps={{

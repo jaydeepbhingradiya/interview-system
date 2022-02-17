@@ -77,6 +77,9 @@ function InterviewFeedbackForm({
   clearField,
   title,
 }) {
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+
   let INITAIL_VALUE = {
     dateOfInterview: selectedResult.dateOfInterview || "",
     candidate: selectedResult.candidate || "",
@@ -92,9 +95,6 @@ function InterviewFeedbackForm({
     note: selectedResult.note || "",
     id: selectedResult.id || "",
   };
-
-  const state = useSelector((state) => state);
-  const dispatch = useDispatch();
 
   const handleSubmit = (result) => {
     let found = state.find((element) => element.id === selectedResult.id);

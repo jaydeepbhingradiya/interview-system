@@ -7,17 +7,17 @@ import { removeResult } from "../../store/actions";
 function AlertDialog({ id }) {
   const dispatch = useDispatch();
 
-  console.log(id);
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const deleteHandler = () => {
+  const handleDelete = () => {
     dispatch(removeResult(id));
     setOpen(false);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -39,7 +39,7 @@ function AlertDialog({ id }) {
 
         <DialogActions>
           <Button onClick={handleClose}>cancel</Button>
-          <Button variant="contained" onClick={deleteHandler} autoFocus>
+          <Button variant="contained" onClick={handleDelete} autoFocus>
             Ok
           </Button>
         </DialogActions>
