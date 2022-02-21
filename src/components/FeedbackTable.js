@@ -158,7 +158,7 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
               </TableSortLabel>
             </TableCell>
 
-            <TableCell align="center">Idsdsdsnterviewer</TableCell>
+            <TableCell align="center">Interviewer</TableCell>
 
             <TableCell align="center">Technology</TableCell>
 
