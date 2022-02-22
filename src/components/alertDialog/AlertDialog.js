@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch } from "react-redux";
@@ -12,7 +12,6 @@ function AlertDialog({ id }) {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleDelete = () => {
     dispatch(removeResult(id));
     setOpen(false);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Table, TableBody, TableContainer, TableHead } from "@mui/material";
 import { TableSortLabel, TableRow, TableCell, Paper } from "@mui/material";
@@ -20,11 +20,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
   const result = useSelector((state) => state);
-  const [data, setData] = useState(result);
+  const [data, setData] = useState([...result]);
   const [order, setOrder] = useState("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    // setRender((preState) => !preState);
+    setData(result);
+  }, [result]);
 
   const handleAdd = () => {
     addTitle();
@@ -48,16 +53,22 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
 
   const handleSorting = (col) => {
     if (order === "asc") {
-      const sorted = [...data].sort((a, b) =>
-        a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+      const sorted = data.sort((a, b) =>
+        JSON.stringify(a[col]).toLowerCase() >
+        JSON.stringify(b[col]).toLowerCase()
+          ? 1
+          : -1
       );
       setData(sorted);
 
       setOrder("dsc");
     }
     if (order === "dsc") {
-      const sorted = [...data].sort((a, b) =>
-        a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+      const sorted = data.sort((a, b) =>
+        JSON.stringify(a[col]).toLowerCase() <
+        JSON.stringify(b[col]).toLowerCase()
+          ? 1
+          : -1
       );
       setData(sorted);
       setOrder("asc");
@@ -79,6 +90,7 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
     }
   });
 
+  console.log(filterData);
   let tablebody = (
     rowsPerPage > 0
       ? filterData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -186,7 +198,9 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
         <TableBody>{tablebody}</TableBody>
       </Table>
       {filterData.length === 0 && (
-        <Typography variant="h4">No data found</Typography>
+        <Typography style={{ marginTop: "10px" }} variant="h4">
+          No data found
+        </Typography>
       )}
       <Table>
         <TableFooter>
