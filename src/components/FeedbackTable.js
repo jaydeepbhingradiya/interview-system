@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { styled } from "@mui/material/styles";
-import { Table, TableBody, TableContainer, TableHead } from "@mui/material";
-import { TableSortLabel, TableRow, TableCell, Paper } from "@mui/material";
-import { Button, TableFooter, TextField, Typography } from "@mui/material";
+import {
+  styled,
+  Button,
+  TableFooter,
+  TextField,
+  Typography,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableSortLabel,
+  TableRow,
+  TableCell,
+  Paper,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
-import { CustomTablePagination } from "./pagination/index";
+import { CustomTablePagination } from "./pagination";
 import AlertDialog from "./alertDialog/AlertDialog";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -27,7 +38,6 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    // setRender((preState) => !preState);
     setData(result);
   }, [result]);
 
@@ -90,7 +100,6 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
     }
   });
 
-  console.log(filterData);
   let tablebody = (
     rowsPerPage > 0
       ? filterData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -137,6 +146,7 @@ function FeedbackTable({ showForm, getselectedData, addTitle, editTitle }) {
   return (
     <TableContainer component={Paper}>
       <Typography variant="h4">Interview Result</Typography>
+
       <TextField
         sx={{ float: "left", marginBottom: "1rem", marginRight: "1rem" }}
         name="search"
